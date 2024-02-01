@@ -25,7 +25,7 @@ const LeftSidebar = () => {
               href={item.route}
               className={`${
                 isActive
-                  ? "primary-gradient rounded-lg text-light-900"
+                  ? "primary-gradient rounded-lg text-light-900 hover:primary-gradient-hover"
                   : "text-dark300_light900"
               } flex items-center justify-start gap-4 bg-transparent p-4`}
             >
