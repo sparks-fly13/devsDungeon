@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { set, z } from "zod";
 import {
   Form,
   FormControl,
@@ -17,9 +17,22 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "../ui/button";
 import { questionSchema } from "@/lib/schema";
+import { Badge } from "../ui/badge";
+import Image from "next/image";
+import { createQuestion } from "@/lib/actions/question.action";
+import { useRouter, usePathname } from "next/navigation";
 
-const QuestionForm = () => {
+const type: any = "create";
+
+interface userIdProps {
+  userId: string;
+}
+
+const QuestionForm = ({ userId }: userIdProps) => {
   const editorRef = useRef(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+  const pathName = usePathname();
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof questionSchema>>({
@@ -32,11 +45,64 @@ const QuestionForm = () => {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof questionSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+  async function onSubmit(values: z.infer<typeof questionSchema>) {
+    setIsSubmitting(true);
+    try {
+      //Make an async call to API to create a question with all form data and then navigate to homepage
+      await createQuestion({
+        title: values.title,
+        questionBody: values.questionBody,
+        tags: values.tags,
+        author: JSON.parse(userId),
+        path: pathName,
+      });
+      router.push("/");
+    } catch (error) {
+    } finally {
+      setIsSubmitting(false);
+    }
     console.log(values);
   }
+
+  const handleTagKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    field: any
+  ) => {
+    if (e.key === "Enter" && field.name === "tags") {
+      e.preventDefault();
+      const input = e.target as HTMLInputElement;
+      const value = input.value.trim();
+      if (value !== "") {
+        if (value.length > 15) {
+          return form.setError("tags", {
+            type: "required",
+            message: "Tags cannot be more than 15 characters",
+          });
+        }
+        if (!field.value.includes(value)) {
+          form.setValue("tags", [...field.value, value]);
+          input.value = "";
+          form.clearErrors("tags");
+        } else {
+          return form.setError("tags", {
+            type: "required",
+            message: "Tag already exists",
+          });
+        }
+      } else {
+        return form.setError("tags", {
+          type: "required",
+          message: "Tags cannot be empty",
+        });
+      }
+      form.trigger("tags");
+    }
+  };
+
+  const handleTagDelete = (tag: string, field: any) => {
+    const newTags = field.value.filter((t: string) => t !== tag);
+    form.setValue("tags", newTags);
+  };
 
   return (
     <Form {...form}>
@@ -73,7 +139,7 @@ const QuestionForm = () => {
           render={({ field }) => (
             <FormItem className="flex w-full flex-col gap-3">
               <FormLabel className="paragraph-semibold text-dark400_light800">
-                Provide a datailed explanation of your problem{" "}
+                Provide a detailed explanation of your problem{" "}
                 <span className="text-primary-500">*</span>
               </FormLabel>
               <FormControl className="mt-3.5">
@@ -83,6 +149,8 @@ const QuestionForm = () => {
                     //@ts-ignore
                     (editorRef.current = editor)
                   }
+                  onBlur={field.onBlur}
+                  onEditorChange={(content) => field.onChange(content)}
                   initialValue=""
                   init={{
                     height: 350,
@@ -114,11 +182,33 @@ const QuestionForm = () => {
                 Question Title <span className="text-primary-500">*</span>
               </FormLabel>
               <FormControl className="mt-3.5">
-                <Input
-                  className="no-focus paragraph-regular background-light900_dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
-                  placeholder="Add tags..."
-                  {...field}
-                />
+                <>
+                  <Input
+                    className="no-focus paragraph-regular background-light900_dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
+                    placeholder="Add tags..."
+                    onKeyDown={(e) => handleTagKeyDown(e, field)}
+                  />
+                  {field.value.length > 0 && (
+                    <div className="flex-start mt-2.5 gap-2.5">
+                      {field.value.map((tag: any, key: number) => (
+                        <Badge
+                          key={key}
+                          className="subtle-medium background-light800_dark300 text-light-400 flex items-center justify-center gap-2 rounded-md border-none px-4 py-2 capitalize"
+                        >
+                          {tag}
+                          <Image
+                            src="/assets/icons/close.svg"
+                            alt="Close"
+                            width={12}
+                            height={12}
+                            className="cursor-pointer object-contain invert-0 dark:invert"
+                            onClick={() => handleTagDelete(tag, field)}
+                          />
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </>
               </FormControl>
               <FormDescription className="body-regular mt-2.5 text-light-500">
                 Add up to 5 tags to describe what your question is about. Press
@@ -128,7 +218,17 @@ const QuestionForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button
+          type="submit"
+          className="primary-gradient w-fit !text-light-900"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <>{type === "edit" ? "Editing..." : "Posting..."}</>
+          ) : (
+            <>{type === "edit" ? "Edit Question" : "Ask Question"}</>
+          )}
+        </Button>
       </form>
     </Form>
   );

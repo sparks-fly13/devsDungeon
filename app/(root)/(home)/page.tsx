@@ -4,64 +4,13 @@ import NoResult from "@/components/shared/NoResult";
 import LocalSearch from "@/components/shared/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
+import { getQuestions } from "@/lib/actions/question.action";
 import Link from "next/link";
 
-const questions = [
-  {
-    _id: "1",
-    title: "How to create a new project in React?",
-    tags: [
-      { _id: "1", name: "React" },
-      { _id: "2", name: "JavaScript" },
-    ],
-    author: {
-      _id: "1",
-      name: "John Carter",
-      avatar: "/assets/icons/avatar.svg",
-    },
-    upvotes: 10,
-    views: 100,
-    answers: [],
-    createdAt: new Date("2023-10-02T11:00:00.000Z"),
-  },
-  {
-    _id: "2",
-    title:
-      "What is the possible practical reach of quantum computing in the next 10 years?",
-    tags: [
-      { _id: "3", name: "Quantum Computing" },
-      { _id: "2", name: "Future" },
-    ],
-    author: {
-      _id: "2",
-      name: "Fiona Smith",
-      avatar: "/assets/icons/avatar.svg",
-    },
-    upvotes: 20021,
-    views: 800213,
-    answers: [],
-    createdAt: new Date("2023-11-22T08:00:00.000Z"),
-  },
-  {
-    _id: "3",
-    title: "How to stylize a React component?",
-    tags: [
-      { _id: "1", name: "React" },
-      { _id: "4", name: "Css" },
-    ],
-    author: {
-      _id: "3",
-      name: "Hazel Jean",
-      avatar: "/assets/icons/avatar.svg",
-    },
-    upvotes: 18,
-    views: 120,
-    answers: [],
-    createdAt: new Date("2023-07-06T15:00:00.000Z"),
-  },
-];
+export default async function Home() {
+  const result = await getQuestions({});
+  const { questions } = result;
 
-export default function Home() {
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
