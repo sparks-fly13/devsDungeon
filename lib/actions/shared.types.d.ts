@@ -114,7 +114,7 @@ export interface CreateUserParams {
   name: string;
   username: string;
   email: string;
-  picture: string;
+  avatar: string;
 }
 
 export interface GetUserByIdParams {
