@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 
 export interface IUser extends mongoose.Document {
-  clerkID: string;
+  clerkId: string;
   name: string;
   username: string;
   email: string;
   password?: string;
   bio?: string;
-  profilePic: string;
+  avatar: string;
   location?: string;
   portfolioLink?: string;
   reputation?: number;
@@ -16,7 +16,7 @@ export interface IUser extends mongoose.Document {
 }
 
 const userSchema = new mongoose.Schema<IUser>({
-  clerkID: {
+  clerkId: {
     type: String,
     required: true,
   },
@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema<IUser>({
   bio: {
     type: String,
   },
-  profilePic: {
+  avatar: {
     type: String,
     required: true,
   },
