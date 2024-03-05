@@ -61,7 +61,6 @@ const QuestionForm = ({ userId }: userIdProps) => {
     } finally {
       setIsSubmitting(false);
     }
-    console.log(values);
   }
 
   const handleTagKeyDown = (
