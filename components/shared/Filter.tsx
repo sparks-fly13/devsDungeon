@@ -47,7 +47,6 @@ const Filter = ({ filters, otherClasses, containerClasses }: filterProps) => {
           </SelectContent>
         </Select>
       </div>
-      <LargeScreenFilters />
     </>
   );
 };

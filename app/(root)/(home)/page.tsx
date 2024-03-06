@@ -1,4 +1,5 @@
 import QuestionCard from "@/components/cards/QuestionCard";
+import LargeScreenFilters from "@/components/home/LargeScreenFilters";
 import Filter from "@/components/shared/Filter";
 import NoResult from "@/components/shared/NoResult";
 import LocalSearch from "@/components/shared/search/LocalSearch";
@@ -35,6 +36,7 @@ export default async function Home() {
           otherClasses="min-h-[56px] sm:min-w-[170px]"
           containerClasses="hidden max-md:flex"
         />
+        <LargeScreenFilters />
       </div>
 
       <div className="mt-10 flex w-full flex-col gap-6">
