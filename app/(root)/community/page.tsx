@@ -22,7 +22,7 @@ const Community = async () => {
         />
         <Filter
           filters={UserFilters}
-          otherClasses="min-h-[56px] sm:min-w-[170px]"
+          otherClasses="min-h-[56px] sm:min-w-[170px] lg:mt-4 md:mt-4"
         />
       </div>
 

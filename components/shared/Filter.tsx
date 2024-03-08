@@ -7,7 +7,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import LargeScreenFilters from "../home/LargeScreenFilters";
 
 interface filterProps {
   filters: {
