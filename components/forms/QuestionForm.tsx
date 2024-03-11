@@ -155,12 +155,14 @@ const QuestionForm = ({ userId }: userIdProps) => {
                     height: 350,
                     menubar: true,
                     plugins:
-                      "autolink anchor charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed",
+                      "autolink anchor charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount",
                     toolbar:
                       "undo redo | " +
                       "codesample | bold italic forecolor | alignleft aligncenter | " +
                       "alignright alignjustify | bullist numlist",
                     content_style: "body { font-family:Inter; font-size:16px }",
+                    skin: "oxide-dark",
+                    content_css: "dark",
                   }}
                 />
               </FormControl>

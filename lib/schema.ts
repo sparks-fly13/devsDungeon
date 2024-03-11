@@ -21,3 +21,9 @@ export const questionSchema = z.object({
     })
     .max(5),
 });
+
+export const AnswerSchema = z.object({
+  answer: z.string().min(100, {
+    message: "Your answer should be at least 100 characters long.",
+  }),
+});
