@@ -41,7 +41,7 @@ const QuestionPage = async ({ params }: any) => {
           </Link>
           <div className="flex justify-end text-dark500_light700">
             <Votes
-              type="question"
+              type="Question"
               itemId={JSON.stringify(question._id)}
               userId={JSON.stringify(user._id)}
               upvotes={question.upvotes.length}
@@ -93,7 +93,7 @@ const QuestionPage = async ({ params }: any) => {
       </div>
       <AllAnswers
         questionId={question._id}
-        userId={JSON.stringify(user._id)}
+        userId={user._id}
         totalAnswers={question.answers.length}
       />
       <AnswerForm

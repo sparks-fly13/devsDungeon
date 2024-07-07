@@ -1,7 +1,14 @@
 "use client";
 
+import { downvoteAnswer, upvoteAnswer } from "@/lib/actions/answer.action";
+import {
+  downvoteQuestion,
+  upvoteQuestion,
+} from "@/lib/actions/question.action";
+import { toggleSavedQuestion } from "@/lib/actions/user.action";
 import { formatNumber } from "@/lib/utils";
 import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 
 interface VoteProps {
@@ -25,8 +32,61 @@ const Votes = ({
   hasdownVoted,
   hasSaved,
 }: VoteProps) => {
-  const handleSave = async () => {};
-  const handleVote = async (voteType: string) => {};
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const handleSave = async () => {
+    await toggleSavedQuestion({
+      questionId: JSON.parse(itemId),
+      userId: JSON.parse(userId),
+      path: pathname
+    });
+  };
+  const handleVote = async (voteType: string) => {
+    if (!userId) return;
+    if (voteType === "upvote") {
+      if (type === "Question") {
+        await upvoteQuestion({
+          questionId: JSON.parse(itemId),
+          userId: JSON.parse(userId),
+          hasdownVoted,
+          hasupVoted,
+          path: pathname,
+        });
+      } else if (type === "Answer") {
+        await upvoteAnswer({
+          answerId: JSON.parse(itemId),
+          userId: JSON.parse(userId),
+          hasdownVoted,
+          hasupVoted,
+          path: pathname,
+        });
+      }
+      // TODO: show a toast
+      return;
+    }
+    if (voteType === "downvote") {
+      if (type === "Question") {
+        await downvoteQuestion({
+          questionId: JSON.parse(itemId),
+          userId: JSON.parse(userId),
+          hasdownVoted,
+          hasupVoted,
+          path: pathname,
+        });
+      } else if (type === "Answer") {
+        await downvoteAnswer({
+          answerId: JSON.parse(itemId),
+          userId: JSON.parse(userId),
+          hasdownVoted,
+          hasupVoted,
+          path: pathname,
+        });
+      }
+      // TODO: show a toast
+      return;
+    }
+  };
 
   return (
     <div className="flex gap-5">
@@ -76,7 +136,7 @@ const Votes = ({
         </div>
       </div>
 
-      <Image
+      {type === 'Question' && <Image
         src={
           hasSaved
             ? "/assets/icons/star-filled.svg"
@@ -87,9 +147,9 @@ const Votes = ({
         height={18}
         className="cursor-pointer"
         onClick={() => {
-          handleSave;
+          handleSave();
         }}
-      />
+      />}
     </div>
   );
 };
