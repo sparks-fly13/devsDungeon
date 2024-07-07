@@ -6,7 +6,7 @@ import { QuestionFilters } from "@/constants/filters";
 import { getSavedQuestions } from "@/lib/actions/user.action";
 import { auth } from "@clerk/nextjs";
 
-export default async function Home() {
+export default async function Collections() {
   const {userId} = auth();
 
   if(!userId) return;
