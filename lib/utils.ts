@@ -39,3 +39,30 @@ export function formatNumber(num: number): string {
     return num.toString();
   }
 }
+
+export function formatDate(date: Date): string {
+  // Function to get the ordinal suffix for the day
+  function getOrdinalSuffix(day: number): string {
+      if (day >= 11 && day <= 13) return day + 'th';
+      switch (day % 10) {
+          case 1: return day + 'st';
+          case 2: return day + 'nd';
+          case 3: return day + 'rd';
+          default: return day + 'th';
+      }
+  }
+
+  // Array of month names
+  const monthNames: string[] = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+
+  // Extract day, month, and year from the Date object
+  const day: number = date.getDate();
+  const month: string = monthNames[date.getMonth()];
+  const year: number = date.getFullYear();
+
+  // Return formatted date string
+  return `${getOrdinalSuffix(day)} ${month}, ${year}`;
+}
