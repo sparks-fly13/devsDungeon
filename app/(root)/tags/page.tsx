@@ -4,7 +4,6 @@ import NoResult from "@/components/shared/NoResult";
 import LocalSearch from "@/components/shared/search/LocalSearch";
 import { TagFilters } from "@/constants/filters";
 import { getAllTags } from "@/lib/actions/tag.action";
-import Link from "next/link";
 import React from "react";
 
 const Tags = async () => {
