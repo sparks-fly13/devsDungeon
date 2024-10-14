@@ -3,6 +3,7 @@ import React from "react";
 import Metric from "../shared/Metric";
 import { formatNumber, getTimestamp } from "@/lib/utils";
 import { SignedIn } from "@clerk/nextjs";
+import EditAndDeleteActions from "../shared/EditAndDeleteActions";
 
 interface AnswerProps {
   _id: string;
@@ -34,12 +35,12 @@ const AnswerCard = ({
               {question.title}
             </h3>
         </div>
-        {/* if signed in then also add edit/delete actions */}
-        {/* <SignedIn>
+        
+        <SignedIn>
             {showActionButtons && (
-                <EditDeleteAction type="answer" itemId={JSON.stringify(_id)} />
+                <EditAndDeleteActions type="Answer" itemId={JSON.stringify(_id)} />
             )}
-        </SignedIn> */}
+        </SignedIn>
 
       </div>
 

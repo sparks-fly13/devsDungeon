@@ -13,16 +13,20 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState("");
 
   const handleThemeChange = () => {
-    if (
-      localStorage.getItem("theme") === "dark" ||
-      (!("theme" in localStorage) &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches)
-    ) {
+    const currentTheme = localStorage.getItem("theme");
+    const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+    console.log("Current Theme:", currentTheme);
+    console.log("Prefers Dark Scheme:", prefersDarkScheme);
+  
+    if (currentTheme === "dark" || (!currentTheme && prefersDarkScheme)) {
       setTheme("dark");
       document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
     } else {
       setTheme("light");
       document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
     }
   };
 

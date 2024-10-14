@@ -19,28 +19,34 @@ import { Button } from "../ui/button";
 import { questionSchema } from "@/lib/schema";
 import { Badge } from "../ui/badge";
 import Image from "next/image";
-import { createQuestion } from "@/lib/actions/question.action";
+import { createQuestion, editQuestion } from "@/lib/actions/question.action";
 import { useRouter, usePathname } from "next/navigation";
-
-const type: any = "create";
 
 interface userIdProps {
   userId: string;
+  type?: string;
+  questionDetails?: string;
 }
 
-const QuestionForm = ({ userId }: userIdProps) => {
+const QuestionForm = ({ userId, type, questionDetails }: userIdProps) => {
   const editorRef = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const pathName = usePathname();
+  
+  let parsedQuestion : any, questionTags;
+  if(questionDetails) {
+    parsedQuestion = JSON.parse(questionDetails || '');
+    questionTags = parsedQuestion.tags.map((tag : any) => tag.name)
+  }
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof questionSchema>>({
     resolver: zodResolver(questionSchema),
     defaultValues: {
-      title: "",
-      questionBody: "",
-      tags: [],
+      title: parsedQuestion? parsedQuestion.title : '',
+      questionBody: parsedQuestion ? parsedQuestion.questionBody : '',
+      tags: questionTags ? questionTags : [],
     },
   });
 
@@ -49,15 +55,29 @@ const QuestionForm = ({ userId }: userIdProps) => {
     setIsSubmitting(true);
     try {
       //Make an async call to API to create a question with all form data and then navigate to homepage
-      await createQuestion({
-        title: values.title,
-        questionBody: values.questionBody,
-        tags: values.tags,
-        author: JSON.parse(userId),
-        path: pathName,
-      });
-      router.push("/");
+      if(type==='edit'){
+        await editQuestion({
+          questionId: parsedQuestion._id,
+          title: values.title,
+          questionBody: values.questionBody,
+          path: pathName
+        })
+        router.push(`/question/${parsedQuestion._id}`)
+      }
+      else {
+        await createQuestion({
+          title: values.title,
+          questionBody: values.questionBody,
+          tags: values.tags,
+          author: JSON.parse(userId),
+          path: pathName,
+        });
+        router.push("/");
+      }
+
     } catch (error) {
+      console.log(error);
+      throw error;
     } finally {
       setIsSubmitting(false);
     }
@@ -150,7 +170,7 @@ const QuestionForm = ({ userId }: userIdProps) => {
                   }
                   onBlur={field.onBlur}
                   onEditorChange={(content) => field.onChange(content)}
-                  initialValue=""
+                  initialValue={parsedQuestion ? parsedQuestion.questionBody : ''}
                   init={{
                     height: 350,
                     menubar: true,
@@ -188,6 +208,7 @@ const QuestionForm = ({ userId }: userIdProps) => {
                     className="no-focus paragraph-regular background-light900_dark300 light-border-2 text-dark300_light700 min-h-[56px] border"
                     placeholder="Add tags..."
                     onKeyDown={(e) => handleTagKeyDown(e, field)}
+                    disabled={type==='edit'}
                   />
                   {field.value.length > 0 && (
                     <div className="flex-start mt-2.5 gap-2.5">
@@ -197,14 +218,16 @@ const QuestionForm = ({ userId }: userIdProps) => {
                           className="subtle-medium background-light800_dark300 text-light-400 flex items-center justify-center gap-2 rounded-md border-none px-4 py-2 capitalize"
                         >
                           {tag}
-                          <Image
-                            src="/assets/icons/close.svg"
-                            alt="Close"
-                            width={12}
-                            height={12}
-                            className="cursor-pointer object-contain invert-0 dark:invert"
-                            onClick={() => handleTagDelete(tag, field)}
-                          />
+                          {type !== 'edit' && (
+                            <Image
+                              src="/assets/icons/close.svg"
+                              alt="Close"
+                              width={12}
+                              height={12}
+                              className="cursor-pointer object-contain invert-0 dark:invert"
+                              onClick={() => handleTagDelete(tag, field)}
+                            />
+                          )}
                         </Badge>
                       ))}
                     </div>

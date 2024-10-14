@@ -5,12 +5,16 @@ import { connectToDatabase } from "../mongoose";
 import Tag from "@/DB/tag.model";
 import {
   CreateQuestionParams,
+  DeleteQuestionParams,
+  EditQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
   QuestionVoteParams,
 } from "./shared.types";
 import User from "@/DB/user.model";
 import { revalidatePath } from "next/cache";
+import Answer from "@/DB/answer.model";
+import Interaction from "@/DB/interaction.model";
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
@@ -150,6 +154,53 @@ export async function downvoteQuestion(data: QuestionVoteParams) {
     // Decrease author's reputation
 
     revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function deleteQuestion(data: DeleteQuestionParams) {
+  try {
+    connectToDatabase();
+    const { questionId, path } = data;
+    await Question.deleteOne({_id: questionId});
+    await Answer.deleteMany({question: questionId});
+    await Interaction.deleteMany({question: questionId});
+    await Tag.updateMany({questions: questionId}, {$pull: {questions: questionId}});
+    revalidatePath(path);
+
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function editQuestion(data: EditQuestionParams) {
+  try{
+    connectToDatabase();
+    const {questionId, title, questionBody, path} = data;
+    const question = await Question.findById(questionId).populate("tags");
+    if(!question) throw new Error("Question was not found");
+    question.title = title;
+    question.questionBody = questionBody;
+    await question.save();
+
+    revalidatePath(path);
+
+  } catch(error){
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getTopQuestions() {
+  try {
+    connectToDatabase();
+    const topQuestions = await Question.find({})
+      .sort({ views: -1, upvotes: -1 })
+      .limit(5);
+    return topQuestions;
   } catch (error) {
     console.log(error);
     throw error;

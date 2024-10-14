@@ -19,7 +19,9 @@ export const questionSchema = z.object({
       message:
         "You need to specify at least one tag to traverse the DevsDungeon.",
     })
-    .max(5),
+    .max(5, {
+      message: "Oh, hold up, you can only specify up to 5 tags."
+    })
 });
 
 export const AnswerSchema = z.object({
@@ -27,3 +29,13 @@ export const AnswerSchema = z.object({
     message: "Your answer should be at least 100 characters long.",
   }),
 });
+
+export const profileSchema = z.object({
+  name: z.string().min(3).max(50),
+  username: z.string().min(4).max(20),
+  portfolio: z.string().url(),
+  location: z.string().max(100),
+  bio: z.string().max(1000, {
+    message: "Bio should be less than 1000 characters"
+  })
+})
