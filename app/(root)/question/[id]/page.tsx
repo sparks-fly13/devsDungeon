@@ -10,10 +10,10 @@ import { formatNumber, getTimestamp } from "@/lib/utils";
 import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { redirect} from "next/navigation";
 import React from "react";
 
-const QuestionPage = async ({ params }: any) => {
+const QuestionPage = async ({ params, searchParams }: any) => {
   const question = await getQuestionById({ questionId: params.id });
   const { userId } = auth();
 
@@ -95,6 +95,8 @@ const QuestionPage = async ({ params }: any) => {
         questionId={question._id}
         userId={user._id}
         totalAnswers={question.answers.length}
+        filter={searchParams?.filter}
+        page={searchParams?.page}
       />
       <AnswerForm
         question={question.questionBody}

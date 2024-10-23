@@ -1,13 +1,22 @@
 import TagCard from "@/components/cards/TagCard";
 import Filter from "@/components/shared/Filter";
 import NoResult from "@/components/shared/NoResult";
+import Pagination from "@/components/shared/Pagination";
 import LocalSearch from "@/components/shared/search/LocalSearch";
 import { TagFilters } from "@/constants/filters";
 import { getAllTags } from "@/lib/actions/tag.action";
+import { SearchParamsProps } from "@/types";
 import React from "react";
 
-const Tags = async () => {
-  const allTags = await getAllTags({});
+const Tags = async ({searchParams} : SearchParamsProps) => {
+  const pageSize = searchParams.pageSize ? +searchParams.pageSize : 6;
+
+  const {tags, isNext} = await getAllTags({
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
+    pageSize
+  });
 
   return (
     <>
@@ -27,9 +36,9 @@ const Tags = async () => {
         />
       </div>
 
-      <section className="mt-12 flex flex-wrap gap-4">
-        {allTags.length > 0 ? (
-          allTags.map((tag) => {
+      <section className="mt-12 flex flex-wrap gap-10 justify-center">
+        {tags.length > 0 ? (
+          tags.map((tag) => {
             return <TagCard key={tag._id} tag={tag} />;
           })
         ) : (
@@ -41,6 +50,9 @@ const Tags = async () => {
           />
         )}
       </section>
+      <div className="mt-10">
+        <Pagination pageNumber={searchParams?.page ? +searchParams.page : 1} isNext={isNext} defaultPageSize={pageSize}/>
+      </div>
     </>
   );
 };

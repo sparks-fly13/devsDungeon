@@ -30,11 +30,38 @@ export async function createAnswer(data: CreateAnswerParams) {
 export async function getAnswers(data: GetAnswersParams) {
   try {
     connectToDatabase();
-    const { questionId } = data;
+    const { questionId, sortBy, page=1, pageSize=5 } = data;
+    const skipBy = (page - 1) * pageSize;
+
+    let sorting = {};
+
+    switch (sortBy) {
+      case "highest_upvotes":
+        sorting = { upvotes: -1 };
+        break;
+      case "lowest_upvotes":
+        sorting = { upvotes: 1 };
+        break;
+      case "recent":
+        sorting = { createdAt: -1 };
+        break;
+      case "old":
+        sorting = { createdAt: 1 };
+        break;
+      default:
+        break;
+    }
+
     const answers = await Answer.find({ question: questionId })
       .populate("author", "_id clerkId name avatar")
-      .sort({ createdAt: -1 });
-    return answers;
+      .sort(sorting)
+      .skip(skipBy)
+      .limit(pageSize);
+    
+    const totalAnswers = await Answer.countDocuments({ question: questionId });
+    const isNext = totalAnswers > skipBy + answers.length;
+
+    return {answers, isNext};
   } catch (error) {
     console.log(error);
     throw error;

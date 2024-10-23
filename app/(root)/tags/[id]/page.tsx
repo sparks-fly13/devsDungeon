@@ -1,5 +1,6 @@
 import QuestionCard from '@/components/cards/QuestionCard';
 import NoResult from '@/components/shared/NoResult';
+import Pagination from '@/components/shared/Pagination';
 import LocalSearch from '@/components/shared/search/LocalSearch';
 import { getQuestionsByTagId } from '@/lib/actions/tag.action';
 import { URLProps } from '@/types';
@@ -7,14 +8,20 @@ import React from 'react'
 
 const tagDetails = async ({params, searchParams}: URLProps) => {
   // console.log("Tag id in details page" + "   " + params.id);
-  const {tagName, questions} = await getQuestionsByTagId({tagId: params.id, page: 1, searchQuery: searchParams.q})
+  const pageSize = searchParams.pageSize ? +searchParams.pageSize : 3;
+  const {tagName, questions, isNext} = await getQuestionsByTagId({
+    tagId: params.id,
+    page: searchParams.page ? +searchParams.page : 1,
+    searchQuery: searchParams.q,
+    pageSize
+  })
   return (
     <>
         <h1 className="h1-bold text-dark100_light900">{tagName}</h1>
 
       <div className="mt-11 w-full">
         <LocalSearch
-          route="/"
+          route={`/tags/${params.id}`}
           iconPosition="left"
           imgSrc="/assets/icons/search.svg"
           placeholder="Search queries"
@@ -49,6 +56,9 @@ const tagDetails = async ({params, searchParams}: URLProps) => {
             linkTitle="Ask a Question"
           />
         )}
+      </div>
+      <div className="mt-10">
+        <Pagination pageNumber={searchParams?.page ? +searchParams.page : 1} isNext={isNext} defaultPageSize={pageSize} pathName='/tags/*'/>
       </div>
     </>
   )

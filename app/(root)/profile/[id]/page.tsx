@@ -19,7 +19,7 @@ const Profile = async ({params, searchParams} : URLProps) => {
         <>
             <div className='flex flex-col-reverse items-start justify-between sm:flex-row'>
                 <div className='flex flex-col items-start gap-4 lg:flex-row'>
-                    <Image src={userDetails?.user.avatar} alt='avatar' width={140} height={140} className='rounded-full object-cover' />
+                    <Image src={userDetails?.user.avatar} alt='avatar' width={140} height={140} className='rounded-full w-40 h-40 object-cover' />
                     <div className='mt-3'>
                         <h2 className='h2-bold text-dark100_light900'>{userDetails?.user.name}</h2>
                         <p className='paragraph-regular text-dark200_light800'>@{userDetails?.user.username}</p>

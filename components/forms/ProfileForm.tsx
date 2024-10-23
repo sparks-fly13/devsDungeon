@@ -35,7 +35,7 @@ const ProfileForm = ({ clerkId, user }: EditProfileProps) => {
         defaultValues: {
             name: parsedUser.name,
             username: parsedUser.username,
-            portfolio: parsedUser.portfolio || '',
+            portfolio: parsedUser.portfolioLink || '',
             location: parsedUser.location || '',
             bio: parsedUser.bio || '',
         },

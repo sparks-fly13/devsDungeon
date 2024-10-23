@@ -40,8 +40,41 @@ export async function getTopTags(data: GetTopInteractedTagsParams) {
 export async function getAllTags(data: GetAllTagsParams) {
   try {
     connectToDatabase();
-    const tags = await Tag.find({});
-    return tags;
+    const {searchQuery, filter, page=1, pageSize} = data;
+    const skipBy = (page - 1) * pageSize;
+
+    const query : FilterQuery<typeof Tag> = {};
+
+    if(searchQuery) {
+      query.$or = [
+        {name: { $regex: new RegExp(searchQuery, `i`)}}
+      ]
+    }
+
+    let sorting = {};
+
+    switch (filter) {
+      case "popular":
+        sorting = {questions: -1}
+        break;
+      case "recent":
+        sorting = {createdAt: -1}
+        break;
+      case "name":
+        sorting = {name: 1}
+        break;
+      case "old":
+        sorting = {createdAt: 1}
+        break;
+      default:
+        break;
+    }
+
+    const tags = await Tag.find(query).sort(sorting).skip(skipBy).limit(pageSize);
+    const totalTags = await Tag.countDocuments(query);
+    const isNext = totalTags > skipBy + tags.length;
+
+    return {tags, isNext};
   } catch (error) {
     console.log(error);
     throw error;
@@ -51,7 +84,8 @@ export async function getAllTags(data: GetAllTagsParams) {
 export async function getQuestionsByTagId(data: GetQuestionsByTagIdParams) {
   try {
     connectToDatabase();
-    const {tagId, page=1, pageSize=10, searchQuery} = data;
+    const {tagId, page=1, pageSize, searchQuery} = data;
+    const skipBy = (page - 1) * pageSize;
 
     const tagFilter: FilterQuery<ITag> = {_id: tagId};
     
@@ -62,6 +96,8 @@ export async function getQuestionsByTagId(data: GetQuestionsByTagIdParams) {
       match: searchQuery ? {title: {$regex: searchQuery, $options: 'i'}} : {},
       options: {
         sort: {createdAt: -1},
+        skip: skipBy,
+        limit: pageSize+1
       },
       populate: [
         {path: 'tags', model: Tag, select: '_id name' },
@@ -71,13 +107,16 @@ export async function getQuestionsByTagId(data: GetQuestionsByTagIdParams) {
 
     if(!tag) throw new Error("Tag not found");
 
+    const isNext = tag.questions.length > pageSize;
+
     const questions = tag.questions;
     // console.log("Tag in server function" + "   " + tag);
     // console.log(tag.questions[0].tags);
     // console.log(tag.questions[0].author);
     return {
       tagName: tag.name,
-      questions
+      questions,
+      isNext
     };
 
   } catch (error) {

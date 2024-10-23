@@ -29,7 +29,7 @@ const UserCard = async ({ user }: UserProps) => {
           alt="User Avatar"
           width={100}
           height={100}
-          className="rounded-full"
+          className="rounded-full border border-rose-500 w-36 h-36"
         />
 
         <div className="mt-4 text-center">

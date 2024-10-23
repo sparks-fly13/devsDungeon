@@ -1,17 +1,24 @@
 import QuestionCard from "@/components/cards/QuestionCard";
 import Filter from "@/components/shared/Filter";
 import NoResult from "@/components/shared/NoResult";
+import Pagination from "@/components/shared/Pagination";
 import LocalSearch from "@/components/shared/search/LocalSearch";
 import { QuestionFilters } from "@/constants/filters";
 import { getSavedQuestions } from "@/lib/actions/user.action";
+import { SearchParamsProps } from "@/types";
 import { auth } from "@clerk/nextjs";
 
-export default async function Collections() {
+export default async function Collections({searchParams} : SearchParamsProps) {
   const {userId} = auth();
 
   if(!userId) return;
-  const savedQuestions = await getSavedQuestions({
+  let pageSize = 2;
+  const {savedQuestions, isNext} = await getSavedQuestions({
     clerkId: userId,
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
+    pageSize
   });
 
   return (
@@ -20,7 +27,7 @@ export default async function Collections() {
 
       <div className="mt-11 max-md:flex justify-between gap-5 max-sm:flex-col sm:items-center">
         <LocalSearch
-          route="/"
+          route="/collections"
           iconPosition="left"
           imgSrc="/assets/icons/search.svg"
           placeholder="Search queries"
@@ -59,6 +66,9 @@ export default async function Collections() {
             linkTitle="Ask a Question"
           />
         )}
+      </div>
+      <div className="mt-10">
+        <Pagination pageNumber={searchParams?.page ? +searchParams.page : 1} isNext={isNext} defaultPageSize={pageSize} pathName="/collections"/>
       </div>
     </>
   );
