@@ -86,7 +86,7 @@ const QuestionCard = ({
         <Metric
           imgUrl="/assets/icons/eye.svg"
           alt="Views"
-          value={formatNumber(views)}
+          value={formatNumber(Math.round(views))}
           title=" Views"
           textStyles="small-medium text-dark400_light800"
         />

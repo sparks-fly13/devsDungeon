@@ -98,11 +98,14 @@ const QuestionPage = async ({ params, searchParams }: any) => {
         filter={searchParams?.filter}
         page={searchParams?.page}
       />
-      <AnswerForm
-        question={question.questionBody}
-        questionId={JSON.stringify(question._id)}
-        authorId={JSON.stringify(user._id)}
-      />
+      {/*Disable answer form if the user is the author of the question*/}
+      {JSON.stringify(question.author._id) !== JSON.stringify(user._id) && (
+        <AnswerForm
+          question={question.questionBody}
+          questionId={JSON.stringify(question._id)}
+          authorId={JSON.stringify(user._id)}
+        />
+      )}
     </>
   );
 };

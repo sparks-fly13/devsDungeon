@@ -6,6 +6,7 @@ import { AnswerVoteParams, CreateAnswerParams, DeleteAnswerParams, GetAnswersPar
 import Question from "@/DB/question.model";
 import { revalidatePath } from "next/cache";
 import Interaction from "@/DB/interaction.model";
+import User from "@/DB/user.model";
 
 export async function createAnswer(data: CreateAnswerParams) {
   try {
@@ -14,11 +15,22 @@ export async function createAnswer(data: CreateAnswerParams) {
     const answer = await Answer.create({ question, author, answerBody });
 
     //Add the answer to question model's answers array
-    await Question.findByIdAndUpdate(question, {
+    const questionObj = await Question.findByIdAndUpdate(question, {
       $push: { answers: answer._id },
     });
 
     //TODO: Add interaction
+    await Interaction.create({
+      user: author,
+      action: "answer",
+      question,
+      answer: answer._id,
+      tags: questionObj.tags,
+    })
+
+    await User.findByIdAndUpdate(author, {
+      $inc: { reputation: 10 }
+    });
 
     revalidatePath(path);
   } catch (error) {
@@ -93,7 +105,14 @@ export async function upvoteAnswer(data: AnswerVoteParams) {
     if (!answer) {
       throw new Error("Answer  not found");
     }
-    // Increase author's reputation
+    // Increase author's reputation for upvote/downvote
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasupVoted ? -2 : 2 }
+    });
+    //+10 for receiving an upvote -10 for receiving a downvote
+    await User.findByIdAndUpdate(answer.author, {
+      $inc: { reputation: hasupVoted ? -10 : 10 }
+    });
 
     revalidatePath(path);
   } catch (error) {
@@ -130,6 +149,13 @@ export async function downvoteAnswer(data: AnswerVoteParams) {
       throw new Error("Answer  not found");
     }
     // Decrease author's reputation
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasdownVoted ? 2 : -2 }
+    });
+    //+10 for receiving an upvote -10 for receiving a downvote
+    await User.findByIdAndUpdate(answer.author, {
+      $inc: { reputation: hasdownVoted ? 10 : -10 }
+    });
 
     revalidatePath(path);
   } catch (error) {

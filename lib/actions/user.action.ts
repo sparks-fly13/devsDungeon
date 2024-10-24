@@ -17,6 +17,8 @@ import {
 import { revalidatePath } from "next/cache";
 import Question from "@/DB/question.model";
 import Answer from "@/DB/answer.model";
+import { BadgeCriteriaType } from "@/types";
+import { assignBadges } from "../utils";
 
 export async function getUserById(data: GetUserByIdParams) {
   try {
@@ -216,11 +218,68 @@ export async function getUserProfileData(data: GetUserByIdParams) {
 
     const totalQuestions = await Question.countDocuments({ author: user._id });
     const totalAnswers = await Answer.countDocuments({ author: user._id });
+    const [questionUpvotes] = await Question.aggregate(
+      [
+        {
+          '$match': {
+            'author': user._id
+          }
+        }, {
+          '$group': {
+            '_id': null, 
+            'totalUpvotes': {
+              '$sum': {'$size': '$upvotes'}
+            }
+          }
+        }
+      ]
+    );
+    const [answerUpvotes] = await Answer.aggregate(
+      [
+        {
+          '$match': {
+            'author': user._id
+          }
+        }, {
+          '$group': {
+            '_id': null, 
+            'totalUpvotes': {
+              '$sum': {'$size': '$upvotes'}
+            }
+          }
+        }
+      ]
+    );
+    const [questionViews] = await Question.aggregate(
+      [
+        {
+          '$match': {
+            'author': user._id
+          }
+        }, {
+          '$group': {
+            '_id': null, 
+            'totalViews': {'$sum': '$views'}
+          }
+        }
+      ]
+    );
+    const criteria = [
+      {type: 'QUESTION_COUNT' as BadgeCriteriaType, count: totalQuestions},
+      {type: 'ANSWER_COUNT' as BadgeCriteriaType, count: totalAnswers},
+      {type: 'QUESTION_UPVOTES' as BadgeCriteriaType, count: questionUpvotes?.totalUpvotes || 0},
+      {type: 'ANSWER_UPVOTES' as BadgeCriteriaType, count: answerUpvotes?.totalUpvotes || 0},
+      {type: 'TOTAL_VIEWS' as BadgeCriteriaType, count: questionViews?.totalViews || 0}
+    ]
+
+    const badgeCount = assignBadges({criteria});
 
     return {
       user,
       totalQuestions,
-      totalAnswers
+      totalAnswers,
+      badgeCount,
+      reputation: user.reputation
     }
 
   } catch (error) {
@@ -238,7 +297,7 @@ export async function getUserQuestions(data: GetUserStatsParams) {
     const totalQuestions = await Question.countDocuments({ author: userId });
 
     const userQuestions = await Question.find({ author: userId })
-      .sort({ views: -1, upvotes: -1 })
+      .sort({ createdAt: -1, views: -1, upvotes: -1})
       .skip(skipBy)
       .limit(pageSize)
       .populate('tags', '_id name')
