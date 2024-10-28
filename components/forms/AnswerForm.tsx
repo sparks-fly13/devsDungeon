@@ -28,6 +28,7 @@ interface Props {
 const AnswerForm = ({ question, questionId, authorId }: Props) => {
   const pathname = usePathname();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAIAnswer, setIsAIAnswer] = useState(false);
   const { theme } = useTheme();
   const editorRef = useRef(null);
 
@@ -62,6 +63,32 @@ const AnswerForm = ({ question, questionId, authorId }: Props) => {
     }
   };
 
+  const generateAIAnswer = async () => {
+    if(!authorId) return;
+    setIsAIAnswer(true);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chatgpt`, {
+        method: "POST",
+        body: JSON.stringify({question}),
+        headers: {
+          'content-type': 'application/json'
+        }
+      });
+      const answerByAI = await res.json();
+      const formattedAnswer = answerByAI.reply.replace(/\n/g, '<br />');
+      if(editorRef.current){
+        //@ts-ignore
+        editorRef.current.setContent(formattedAnswer);
+      }
+      
+    } catch (error) {
+      console.log(error);
+      throw error;
+    } finally {
+      setIsAIAnswer(false);
+    }
+  }
+
   return (
     <div>
       <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
@@ -70,10 +97,16 @@ const AnswerForm = ({ question, questionId, authorId }: Props) => {
         </h4>
 
         <Button
-          onClick={() => {}}
+          onClick={generateAIAnswer}
           className="btn light-border-2 gap-1.5 rounded-md px-4 py-2.5 text-primary-500 shadow-none hover:primary-gradient hover:text-white"
         >
-          <Image
+          {isAIAnswer ? (
+          <>
+            Referencing...
+          </>
+        ) : (
+          <>
+            <Image
             src="/assets/icons/stars.svg"
             alt="stars"
             width={12}
@@ -81,6 +114,8 @@ const AnswerForm = ({ question, questionId, authorId }: Props) => {
             className="object-contain"
           />
           Reference an AI answer
+          </>
+        )}
         </Button>
       </div>
 
