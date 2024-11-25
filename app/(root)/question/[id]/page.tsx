@@ -74,7 +74,7 @@ const QuestionPage = async ({ params, searchParams }: any) => {
         <Metric
           imgUrl="/assets/icons/eye.svg"
           alt="Views"
-          value={formatNumber(question.views)}
+          value={formatNumber(Math.round(question.views))}
           title=" Views"
           textStyles="small-medium text-dark400_light800"
         />
