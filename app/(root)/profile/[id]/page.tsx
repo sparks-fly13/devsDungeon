@@ -12,6 +12,25 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react'
 
+import type { Metadata, ResolvingMetadata } from 'next'
+ 
+export async function generateMetadata(
+  { params }: URLProps,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const product = await getUserProfileData({userId: params.id})
+
+  const previousImages = (await parent).openGraph?.images || []
+ 
+  return {
+    title: product.user.name,
+    openGraph: {
+      images: [product.user.avatar, ...previousImages],
+    },
+    description: product.user.bio || 'A developer in the dungeon',
+  }
+}
+
 const Profile = async ({params, searchParams} : URLProps) => {
     const userDetails = await getUserProfileData({userId: params.id});
     const {userId : clerkId} = auth();

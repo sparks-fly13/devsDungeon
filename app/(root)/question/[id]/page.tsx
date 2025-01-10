@@ -13,6 +13,20 @@ import Link from "next/link";
 import { redirect} from "next/navigation";
 import React from "react";
 
+import type { Metadata } from 'next'
+ 
+export async function generateMetadata(
+  { params }: any
+): Promise<Metadata> {
+  const question = await getQuestionById({ questionId: params.id })
+ 
+  return {
+    title: question.title,
+    description: question.questionBody || "A question",
+  }
+}
+
+
 const QuestionPage = async ({ params, searchParams }: any) => {
   const question = await getQuestionById({ questionId: params.id });
   const { userId } = auth();

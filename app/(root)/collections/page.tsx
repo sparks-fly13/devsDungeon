@@ -8,6 +8,13 @@ import { getSavedQuestions } from "@/lib/actions/user.action";
 import { SearchParamsProps } from "@/types";
 import { auth } from "@clerk/nextjs";
 
+import type { Metadata } from "next";
+
+export const metadata : Metadata = {
+  title: "Your Collection of Questions",
+  description: "A collection of the questions you've saved right here at DevsDungeon",
+}
+
 export default async function Collections({searchParams} : SearchParamsProps) {
   const {userId} = auth();
 

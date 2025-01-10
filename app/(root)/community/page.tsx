@@ -7,6 +7,13 @@ import { getAllUsers } from "@/lib/actions/user.action";
 import { SearchParamsProps } from "@/types";
 import Link from "next/link";
 
+import type { Metadata } from "next";
+
+export const metadata : Metadata = {
+  title: "Explore the community",
+  description: "Explore the profiles of your fellow developers in the community",
+}
+
 const Community = async ({searchParams} : SearchParamsProps) => {
   const pageSize = searchParams.pageSize ? +searchParams.pageSize : 2;
   const {users, isNext} = await getAllUsers({

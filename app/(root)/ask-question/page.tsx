@@ -4,6 +4,13 @@ import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import React from "react";
 
+import type { Metadata } from "next";
+
+export const metadata : Metadata = {
+  title: "Ask a Question | DevsDungeon",
+  description: "Ask a question and post it to the community to get answers from other developers."
+}
+
 const AskQuestion = async () => {
   const { userId } = auth();
 

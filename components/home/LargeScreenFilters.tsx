@@ -39,8 +39,8 @@ const LargeScreenFilters = () => {
           <Button
             className={`body-medium rounded-lg px-6 py-3 capitalize shadow-none ${
               active === item.value
-                ? "bg-primary-100 text-primary-500 hover:bg-primary-200"
-                : "bg-light-800 text-light-500 hover:bg-light-900 dark:bg-dark-300 dark:text-light-500 dark:hover:bg-dark-500"
+                ? "bg-primary-100 text-primary-500 hover:bg-primary-200 hover:-translate-y-1 transition duration-300"
+                : "bg-light-800 text-light-500 hover:bg-light-900 dark:bg-dark-300 dark:text-light-500 dark:hover:bg-dark-500 hover:-translate-y-1 transition duration-300"
             }`}
             key={item.value}
             onClick={() => handleFilterClick(item.value)}

@@ -39,7 +39,7 @@ export async function getQuestions({searchQuery, filter, page = 1, pageSize}: Ge
       case "newest":
         sorting = {createdAt: -1};
         break;
-      case "recommended":
+      case "upvotes":
         sorting = {upvotes: -1};
         break;
       case "frequent":

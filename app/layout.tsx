@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   title: "DevsDungeon",
   description: "A place for developers to learn and grow",
   icons: {
-    icon: "/assets/images/site-logo.svg",
+    icon: "/assets/images/DevsDungeon.svg",
   },
 };
 

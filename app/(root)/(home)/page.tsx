@@ -9,6 +9,12 @@ import { HomePageFilters } from "@/constants/filters";
 import { getQuestions } from "@/lib/actions/question.action";
 import { SearchParamsProps } from "@/types";
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata : Metadata = {
+  title: "Home | DevsDungeon",
+  description: "Welcome to the landing page of DevsDungeon. You can explore a lot of things starting and create your very own community of amazing developers!"
+}
 
 export default async function Home({searchParams} : SearchParamsProps) {
   const pageSize = searchParams.pageSize ? +searchParams.pageSize : 3;

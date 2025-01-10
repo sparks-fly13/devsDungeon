@@ -72,7 +72,7 @@ const ProfileForm = ({ clerkId, user }: EditProfileProps) => {
                     name="name"
                     render={({ field }) => (
                         <FormItem className="space-y-3.5">
-                            <FormLabel>Name <span className="text-primary-500">*</span> </FormLabel>
+                            <FormLabel className="font-bold text-dark400_light800">Name <span className="text-primary-500">*</span> </FormLabel>
                             <FormControl>
                                 <Input placeholder="kimi no na wa" className="no-focus paragraph-regular light-border-2 background-light700_dark300 text-dark300_light700 min-h-[56px] border" {...field} />
                             </FormControl>
@@ -86,7 +86,7 @@ const ProfileForm = ({ clerkId, user }: EditProfileProps) => {
                     name="username"
                     render={({ field }) => (
                         <FormItem className="space-y-3.5">
-                            <FormLabel>Username <span className="text-primary-500">*</span> </FormLabel>
+                            <FormLabel className="font-bold text-dark400_light800">Username <span className="text-primary-500">*</span> </FormLabel>
                             <FormControl>
                                 <Input placeholder="Your username" className="no-focus paragraph-regular light-border-2 background-light700_dark300 text-dark300_light700 min-h-[56px] border" {...field} />
                             </FormControl>
@@ -100,7 +100,7 @@ const ProfileForm = ({ clerkId, user }: EditProfileProps) => {
                     name="portfolio"
                     render={({ field }) => (
                         <FormItem className="space-y-3.5">
-                            <FormLabel>Portfolio Link</FormLabel>
+                            <FormLabel className="font-bold text-dark400_light800">Portfolio Link</FormLabel>
                             <FormControl>
                                 <Input type="url" placeholder="Your portfolio link" className="no-focus paragraph-regular light-border-2 background-light700_dark300 text-dark300_light700 min-h-[56px] border" {...field} />
                             </FormControl>
@@ -114,7 +114,7 @@ const ProfileForm = ({ clerkId, user }: EditProfileProps) => {
                     name="location"
                     render={({ field }) => (
                         <FormItem className="space-y-3.5">
-                            <FormLabel>Location</FormLabel>
+                            <FormLabel className="font-bold text-dark400_light800">Location</FormLabel>
                             <FormControl>
                                 <Input placeholder="You live here" className="no-focus paragraph-regular light-border-2 background-light700_dark300 text-dark300_light700 min-h-[56px] border" {...field} />
                             </FormControl>
@@ -128,7 +128,7 @@ const ProfileForm = ({ clerkId, user }: EditProfileProps) => {
                     name="bio"
                     render={({ field }) => (
                         <FormItem className="space-y-3.5">
-                            <FormLabel>Bio</FormLabel>
+                            <FormLabel className="font-bold text-dark400_light800">Bio</FormLabel>
                             <FormControl>
                                 <Textarea placeholder="Your biography goes here" className="no-focus paragraph-regular light-border-2 background-light700_dark300 text-dark300_light700 min-h-[56px] border" {...field} />
                             </FormControl>

@@ -46,7 +46,6 @@ const AllAnswers = async ({
       <div>
         {answers.map((answer) => (
           <article key={answer._id} className="light-border border-b py-10">
-            <div className="flex items-center justify-between">
               {/*Span ID segment*/}
               <div className="mb-8 flex flex-col-reverse justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
                 <Link
@@ -82,7 +81,6 @@ const AllAnswers = async ({
               />
                 </div>
               </div>
-            </div>
             <ParseHtml data={answer.answerBody} />
           </article>
         ))}
