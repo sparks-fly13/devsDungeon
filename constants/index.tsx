@@ -24,7 +24,7 @@ export const sidebarLinks: SidebarLink[] = [
   },
   {
     imgURL: "/assets/icons/suitcase.svg",
-    route: "/jobs",
+    route: "https://queryverse-vtkl.onrender.com/",
     label: "Find Jobs",
   },
   {
