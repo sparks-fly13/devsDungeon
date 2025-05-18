@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from 'react'
 import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
+import { FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
 import PlaceIcon from '@mui/icons-material/Place';
 import { NavLink } from 'react-router-dom'
 import axios from 'axios';
@@ -420,25 +420,23 @@ export default function JobList() {
                   currentJobs.map((job, i) => (
 
                     <motion.div
+                    key={1}
                     whileHover={{ scale: 1.03,duration:0.1 }} // Scale up the card on hover
               initial={{ y: '-50%', opacity: 0 }} // Start completely off screen left and invisible
               whileInView={{ y: 0, opacity: 1 }}     // Animate to its final position and fully visible
               transition={{ duration: 0.5+(i/2) }}          // Specify the duration of the transition
               viewport={{ once: true }}               // Ensures the animation happens only once after coming into view
               
-              class="relative flex bg-clip-border m-[1.5vw] md:m-[5vw] rounded-xl border bg-white dark:bg-[#212734] text-gray-700 shadow-md w-full max-w-[90vw] flex-row hover:shadow-lg hover:border-green-500">
-                      <div class="relative m-0 overflow-hidden text-gray-700 bg-white dark:text-gray-300 dark:bg-[#212734] rounded-none sm:rounded-md lg:rounded-xl bg-clip-border hidden sm:block w-full md:w-1/3 lg:w-1/3">
-                        <img src={`https://source.unsplash.com/random/?company=${i}`} alt="card-image" class="object-cover w-auto h-[20vw]  md:h-[12vw] lg:h-[15vw] xl:h-[17vw]  sm:rounded-none lg:rounded-none xl:rounded-none" />
-                      </div>
+              className="relative flex bg-clip-border m-[1.5vw] md:m-[5vw] rounded-xl border bg-white dark:bg-[#212734] text-gray-700 shadow-md w-full max-w-[90vw] flex-row hover:shadow-lg hover:border-green-500">
 
-                      <div class="p-[1vw]">
-                        <h4 class="block mb-[1vw] font-serif text-[3vw] md:text-[1.5vw] lg:text-[1.5vw] antialiased font-semibold leading-snug tracking-normal text-blue-gray-900 text-green-500 uppercase">
+                      <div className="p-[1vw]">
+                        <h4 className="block mb-[1vw] font-serif text-[3vw] md:text-[1.5vw] lg:text-[1.5vw] antialiased font-semibold leading-snug tracking-normal text-blue-gray-900 text-green-500 uppercase">
                           {job.companyName}
                         </h4>
-                        <h6 class="block mb-[1vw] font-serif text-[2vw] md:text-[1.2vw] antialiased leading-relaxed tracking-normal text-gray-700 dark:text-gray-300 ">
+                        <h6 className="block mb-[1vw] font-serif text-[2vw] md:text-[1.2vw] antialiased leading-relaxed tracking-normal text-gray-700 dark:text-gray-300 ">
                           <div className='font-bold text-[2.5vw] md:text-[1.2vw]'>Role: {job.jobTitle}</div>
                         </h6>
-                        <p class="flex flex-col md:flex-row items-start md:items-center gap-[1.5vw] mb-[1.5vw] md:mb-[3vw] font-serif text-base md:text-[1vw] antialiased font-normal leading-relaxed text-gray-700 dark:text-slate-400">
+                        <p className="flex flex-col md:flex-row items-start md:items-center gap-[1.5vw] mb-[1.5vw] md:mb-[3vw] font-serif text-base md:text-[1vw] antialiased font-normal leading-relaxed text-gray-700 dark:text-slate-400">
                           <div className='hidden md:flex items-center'>
                             <PlaceIcon />
                             <div className='font-bold text-[2vw] md:text-[1vw]'>Location: {job.location}</div>
@@ -456,8 +454,8 @@ export default function JobList() {
                         <NavLink to={`/JobDetail/${job._id}`} className="inline-block">
                           <button className={`flex items-center gap-[1vw] px-[1vw] md:px-[1.2vw] font-serif ${isMobile ? 'text-[3vw]' : 'text-[1vw]'} font-semibold text-center text-gray-900 dark:text-gray-400 uppercase align-middle transition-all rounded-lg select-none disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none hover:bg-gray-900/10 active:bg-gray-900/20" type="button`}>
                             Learn More
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="w-4 h-4">
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"></path>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"></path>
                             </svg>
                           </button>
                         </NavLink>
