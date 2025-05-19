@@ -41,7 +41,7 @@ function CandidateDashItem() {
 
     //finding user id.....
     useEffect(() => {
-        console.log("Executing useEffect for getCandidateData");
+        console.log("Executing useEffect for getCandidateData in the candidate dashboard section");
         const getCandidateData = async () => {
             try {
                 const result = await axios.get('/api/');

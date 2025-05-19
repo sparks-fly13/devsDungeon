@@ -19,6 +19,8 @@ function JobDetail() {
 
   const queries = ['office', 'corporate', 'business', 'workplace', 'company building', 'job interview'];
   const randomQuery = queries[Math.floor(Math.random() * queries.length)];
+  const url = `https://api.unsplash.com/photos/random?client_id=${accessKey}&query=${randomQuery}`;
+
 
   useEffect(() => {
     const getJobData = async () => {
@@ -36,7 +38,7 @@ function JobDetail() {
   useEffect(() => {
     const fetchUnsplashImage = async () => {
       try {
-        const res = await axios.get(`https://api.unsplash.com/photos/random?client_id=${accessKey}&query=${randomQuery}`);
+        const res = await axios.get(url);
         setUnsplashImageUrl(res.data.urls.small);
       } catch (err) {
         console.error('Error fetching Unsplash image:', err);

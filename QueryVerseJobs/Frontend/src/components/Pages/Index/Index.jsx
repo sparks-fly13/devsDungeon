@@ -17,7 +17,9 @@ function Index() {
 
   const [loggedIn, setLoggedIn] = useState(false) //checking whether the user is logged in or nor
   const [user, setUser] = useState({})
-  const [category, setCategory] = useState()
+  const [jobData, setjobData] = useState([]) //for storing the job data
+  const [category, setCategory] = useState();
+  const [recommendedJobs, setRecommededJobs] = useState([]) //for storing the recommended jobs
 
   const navigate = useNavigate();
 
@@ -49,7 +51,7 @@ function Index() {
     const checkForLogins = async () => {
       try {
         const res = await axios.get('/api/')
-        //console.log(res)
+        console.log("I m getting users data it from the index section = ", res.data)
         if (res.data.valid) {
           setLoggedIn(true)
           setUser(res.data.user)
@@ -65,6 +67,34 @@ function Index() {
     checkForLogins()
   }, [loggedIn])
 
+  useEffect(() => {
+        const getData = async () => {
+            try {
+                const result = await axios.get('/api/getdata')
+               console.log("I m getting jobs it from the index section = ", result.data)
+                setjobData(result.data)
+
+            } catch (error) {
+                console.log("Error occured in the index.jsx frontend inside getData section = ", error)
+            }
+        }
+
+        getData()
+    },[user])
+
+  useEffect(() => {
+    if (loggedIn) {
+      if (category === 'candidate' && jobData && user) {
+       const response = axios.post('https://reccomendation-model.onrender.com/recommend-direct', { candidate: user, jobs: jobData })
+        response.then((res) => {
+          console.log("I m getting the recommended jobs = ", res.data)
+          setRecommededJobs(res.data)
+        }).catch((err) => {
+          console.log("Error in the recommendation model = ", err)
+        })
+      }
+    }
+  },[jobData, user])
 
 
   return (
@@ -97,7 +127,7 @@ function Index() {
         {
           (category === 'candidate') ? 
           (
-            <CandidateIndex />
+            <CandidateIndex recommendedJobs={recommendedJobs}/>
           ) : (<></>)
         }
 

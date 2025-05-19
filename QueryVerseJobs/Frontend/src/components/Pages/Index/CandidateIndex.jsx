@@ -6,7 +6,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-function CandidateIndex() {
+function CandidateIndex({recommendedJobs}) {
 
     //${isMobile ? 'text-[5vw]' : 'text-[1.5vw]'}
 
@@ -57,6 +57,7 @@ function CandidateIndex() {
 
         getData()
     })
+    
     return (
         <div>
             <motion.div 
@@ -82,9 +83,10 @@ function CandidateIndex() {
 
 
                 <div className={`Jobs flex flex-col gap-[5vw] `}  >
-                    {jobData.slice(0, 6).map((job, index) =>
+                    {(recommendedJobs && recommendedJobs.length > 0 ? recommendedJobs : jobData.slice(0,5))?.map((job, index) =>
 
-                    (<motion.div
+                    (<NavLink to={`/JobDetail/${job.jobId}`} key={index} className={` `}  >
+                    <motion.div
                         whileHover={{ scale: 1.05,duration:0.2 }} // Scale up the card on hover
                         initial={{ x: '-50%', opacity: 0 }} // Start completely off screen left and invisible
                         whileInView={{ x: 0, opacity: 1 }}     // Animate to its final position and fully visible
@@ -125,7 +127,9 @@ function CandidateIndex() {
 
                         </div>
 
-                    </motion.div>))}
+                    </motion.div>
+                    </NavLink>
+                    ))}
 
                 </div>
                 <NavLink to="/JobList">
